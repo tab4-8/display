@@ -187,8 +187,16 @@ set_speaker_light_locked(struct light_device_t* dev,
                 write_int(GREEN_LED_FILE, 0);
 	}
         if (blue) {
+        /* lizheng@20161229 for led_blue pwm control*/
+        #ifdef P3590_HAL_LIGHTS
+            int value = (int)(((float)onMS/(float)(onMS + offMS)) * (float)blue);
+            write_int(BLUE_LED_FILE, value);
+            write_int(RED_LED_FILE, red);
+            write_int(GREEN_LED_FILE, green);
+        #else
             if (write_int(BLUE_BLINK_FILE, blink))
                 write_int(BLUE_LED_FILE, 0);
+        #endif
 	}
     } else {
         write_int(RED_LED_FILE, red);
